@@ -6,7 +6,8 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 def get_business_context(analysis_json_str):
     """
-    Sends the aggregated analysis JSON (as a string) to OpenAI and returns a refined, business-specific analysis.
+    Sends the aggregated analysis JSON (as a string) to OpenAI and returns a
+     refined, business-specific analysis.
     """
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",  # or another model of your choice
