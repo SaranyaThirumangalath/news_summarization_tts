@@ -1,0 +1,8 @@
+Flask
+streamlit
+requests
+beautifulsoup4
+nltk
+rake-nltk
+gTTS
+openai==0.27.0
