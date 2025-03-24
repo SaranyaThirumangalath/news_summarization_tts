@@ -1,0 +1,134 @@
+Project Overview
+
+The News Sentiment & Comparative Analyzer is an application designed to extract, process, and analyze news articles about a given company. The tool not only retrieves articles and determines their sentiment but also provides a comparative analysis across multiple news pieces. In addition, the application generates a Hindi text-to-speech (TTS) summary and refines business insights using an OpenAI language model.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+Detailed Module Breakdown
+
+1. News Extraction (scraper.py)
+  Objective:
+     To gather a comprehensive set of news articles relevant to a user-provided query.
+  Approach:
+
+    -  NewsAPI Integration:
+
+       - The fetch_news_articles function sends an HTTP GET request to NewsAPI’s “everything” endpoint with the search query, desired page size, and a securely stored API key.
+       - It retrieves a JSON response containing raw article data.
+
+
+    - Web Scraping:
+
+      - Once the raw data is fetched, the scrape_article_page function uses BeautifulSoup to parse each article’s HTML content.
+      - It extracts key metadata such as the article title, summary, and publication date.
+      - This step ensures that we have structured, detailed information from each source.
+
+
+    - Combined Process:
+
+      - The fetch_and_scrape_articles function integrates both steps—fetching articles from NewsAPI and then scraping each article URL—to produce a clean list of articles for further analysis.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+2. Sentiment Analysis (sentiment_analysis.py)
+
+  Objective:
+   To evaluate the sentiment of each news article and classify it as Positive, Negative, or Neutral.
+ 
+  Approach:
+  
+  - VADER Sentiment Analyzer:
+
+    - Using NLTK’s VADER tool, the analyze_sentiment function processes the article text.
+    - VADER returns scores for various sentiment dimensions. Based on the compound score:
+      - Compound ≥ 0.05: Labeled as Positive
+      - Compound ≤ -0.05: Labeled as Negative
+      - Otherwise: Labeled as Neutral
+
+  - Output:
+
+    - Each article is annotated with a sentiment label along with a detailed breakdown of sentiment scores.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+3. Comparative Analysis (comparative_analysis.py)
+
+  Objective:
+   To derive deeper insights by comparing sentiment and topics across multiple articles.
+
+  Approach:
+
+  - Sentiment Distribution:
+    - The module counts the number of articles falling into each sentiment category.
+
+  - Topic Frequency:
+    - It analyzes topics extracted from each article to identify common themes and unique subjects.
+
+  - Coverage Differences:
+    - By comparing pairs of articles, the module generates descriptive insights about differences in sentiment and focus. This can help in understanding market perceptions or investor sentiment.
+
+  - Output:
+    The comparative analysis produces a structured dictionary that includes:
+    - Overall sentiment distribution.
+    - Lists of common and unique topics.
+    - Detailed comparisons highlighting contrasting coverage.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+4. Text-to-Speech (TTS) (tts.py)
+  
+  Objective:
+   To generate an audio summary of the overall sentiment analysis in Hindi.
+  
+  Approach:
+
+    - gTTS Implementation:
+
+      - The text_to_speech_hindi function uses the gTTS library to convert the final sentiment summary (in Hindi) into speech.
+      - The audio is stored in an in-memory BytesIO object.
+
+
+  Output:
+    - The resulting audio is encoded in Base64 and returned for playback within the user interface.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+5. OpenAI Integration (openai_agent.py)
+
+  Objective:
+   To enhance and refine the initial analysis by providing additional business insights.
+  
+  Approach:
+    
+    - Data Trimming:
+      - Before sending data to OpenAI, the analysis is trimmed to include only essential details: company name, sentiment distribution, and the final sentiment analysis. This keeps the input within token limits.
+
+
+    - Refinement:
+      - The trimmed JSON is passed to an OpenAI language model (GPT-3.5 Turbo), which is prompted to generate refined business insights—such as market trends, potential impacts on investor sentiment, or strategic recommendations.
+
+
+    - Output:
+     - The refined business analysis is incorporated into the final JSON output that is presented to the user.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+Overall System Flow
+
+    1. User Input:
+       The user enters a company name or topic and selects the number of articles to analyze via a simple Streamlit interface.
+    
+    2. Backend Processing:
+       The application sends the query to a Flask API, which orchestrates the news extraction (using NewsAPI and BeautifulSoup), sentiment analysis, and comparative analysis. The final sentiment is also converted into Hindi TTS audio.
+    
+    3. Refinement:
+       The initial analysis is trimmed and sent to OpenAI, where refined business insights are generated and added to the final output.
+    
+    4. Output:
+       The final result—a structured JSON containing article details, comparative analysis, a Hindi sentiment summary, and refined business insights—is displayed on the UI. Additionally, the TTS audio is playable within the application.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+Conclusion
+
+  This project demonstrates a complete data science workflow—from data collection and text processing to sentiment analysis, comparative insights, and advanced AI-driven refinement. The application is built using modular components that handle distinct tasks, ensuring clarity and maintainability. The integration of Hindi TTS and OpenAI’s API further enhances the output, making the insights both accessible and actionable for business decision-making.
